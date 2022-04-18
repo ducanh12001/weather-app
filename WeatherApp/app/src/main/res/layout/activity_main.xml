@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#91cbe0"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="20dp"
+        android:textColor="@color/white"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:text="Thời tiết"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/cityName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:backgroundTint="@color/black"
+            android:textCursorDrawable="@drawable/cursorfix"
+            android:hint="Tìm tên thành phố"
+            android:padding="20dp" />
+
+        <Button
+            android:id="@+id/findBut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="#1265a4"
+            android:onClick="getWeather"
+            android:text="Xem"
+            android:textColor="@color/white" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:padding="10dp">
+            <TextView
+                android:id="@+id/result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="24sp"/>
+        </ScrollView>
+    </LinearLayout>
+
+
+</RelativeLayout>
