@@ -3,9 +3,7 @@ package com.example.weatherapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -26,8 +24,8 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity {
     EditText cityName;
     TextView results;
-    private String url = "https://api.openweathermap.org/data/2.5/weather";
-    private String apiKey = "cc3a92d941f18252d44a4bc748a34a79";
+    private final String url = "https://api.openweathermap.org/data/2.5/weather";
+    private final String apiKey = "cc3a92d941f18252d44a4bc748a34a79";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,17 +39,16 @@ public class MainActivity extends AppCompatActivity {
     public void getWeather(View view) {
         InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mgr.hideSoftInputFromWindow(cityName.getWindowToken(), 0);
-
         String tempUrl;
-        String city = cityName.getText().toString().trim();
+        String city = cityName.getText().toString();
         if (city.equals("")) {
             results.setText("Vui lòng nhập tên thành phố");
         } else {
-            tempUrl = url +  "?q=" + city + "&appid=" + apiKey;
+            tempUrl = url +  "?q=" + city + "&appid=" + apiKey + "&lang=vi";
+            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
             StringRequest stringRequest = new StringRequest(Request.Method.POST, tempUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    Log.d("Response", response);
                     String op = "";
                     try {
                         JSONObject jsonObject = new JSONObject(response);
@@ -64,15 +61,14 @@ public class MainActivity extends AppCompatActivity {
                         int humidity = jsonObjectMain.getInt("humidity");
                         JSONObject jsonObjectWind = jsonObject.getJSONObject("wind");
                         String wind = jsonObjectWind.getString("speed");
-                        JSONObject jsonObjectCloud = jsonObject.getJSONObject("cloud");
+                        JSONObject jsonObjectCloud = jsonObject.getJSONObject("clouds");
                         String cloud = jsonObjectCloud.getString("all");
                         JSONObject jsonObjectSys = jsonObject.getJSONObject("sys");
                         String country = jsonObjectSys.getString("country");
 
-                        results.setTextColor(Color.BLACK);
-                        op += "Địa điểm: " + city + "\n Quốc gia: " + country + "\n Tình trạng: " + description
-                                + "\n Nhiệt độ: " + temp + "°C\n Độ ẩm: " + humidity
-                                + "\n Tốc độ gió: " + wind + " km/h\n Mây: " + cloud + "% \n Áp suất: " + pressure + "hPa";
+                        op += "Địa điểm: " + city + "\nQuốc gia: " + country + "\nHiện trạng: " + description
+                                + "\nNhiệt độ: " + String.format("%.2f", temp) + " °C\nĐộ ẩm: " + humidity
+                                + " %\nTốc độ gió: " + wind + " m/s\nMây: " + cloud + " %\nÁp suất: " + pressure + " hPa";
                         results.setText(op);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -81,11 +77,10 @@ public class MainActivity extends AppCompatActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(getApplicationContext(), error.toString().trim(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
                     results.setText("Thành phố không tồn tại");
                 }
             });
-            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
             requestQueue.add(stringRequest);
         }
     }
