@@ -5,35 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#91cbe0"
+    android:background="@drawable/background_color"
     tools:context=".MainActivity">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="20dp"
-        android:textColor="@color/white"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:text="Thời tiết"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
         android:orientation="vertical">
 
-        <EditText
+        <TextView
             android:id="@+id/cityName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:fontFamily="serif"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/cityInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:backgroundTint="@color/black"
-            android:textCursorDrawable="@drawable/cursorfix"
             android:hint="Tìm tên thành phố"
+            android:inputType="textCapWords"
             android:padding="20dp"
-            android:inputType="textCapWords"/>
+            android:textCursorDrawable="@drawable/cursorfix" />
 
         <Button
             android:id="@+id/findBut"
@@ -48,17 +48,43 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_margin="10dp"
             android:padding="10dp">
-            <TextView
-                android:id="@+id/result"
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:textColor="@color/black"
-                android:lineSpacingExtra="10sp"/>
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/nhietdo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="40sp"
+                    android:fontFamily="serif"/>
+
+                <TextView
+                    android:id="@+id/hientrang"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:textColor="@color/white"
+                    android:textSize="30sp"
+                    android:fontFamily="serif"/>
+
+                <TextView
+                    android:id="@+id/result"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:lineSpacingExtra="10sp"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:fontFamily="serif"/>
+            </LinearLayout>
         </ScrollView>
     </LinearLayout>
 </RelativeLayout>

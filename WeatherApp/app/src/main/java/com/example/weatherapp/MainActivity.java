@@ -22,8 +22,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
-    EditText cityName;
-    TextView results;
+    EditText cityInput;
+    TextView cityName, nhietdo, hientrang, results;
     private final String url = "https://api.openweathermap.org/data/2.5/weather";
     private final String apiKey = "cc3a92d941f18252d44a4bc748a34a79";
 
@@ -32,16 +32,29 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        cityInput = findViewById(R.id.cityInput);
         cityName = findViewById(R.id.cityName);
+        nhietdo = findViewById(R.id.nhietdo);
+        hientrang = findViewById(R.id.hientrang);
         results = findViewById(R.id.result);
+
+        cityInput.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cityInput.setText("");
+            }
+        });
     }
 
     public void getWeather(View view) {
         InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        mgr.hideSoftInputFromWindow(cityName.getWindowToken(), 0);
+        mgr.hideSoftInputFromWindow(cityInput.getWindowToken(), 0);
         String tempUrl;
-        String city = cityName.getText().toString();
+        String city = cityInput.getText().toString();
         if (city.equals("")) {
+            cityName.setText("");
+            nhietdo.setText("");
+            hientrang.setText("");
             results.setText("Vui lòng nhập tên thành phố");
         } else {
             tempUrl = url +  "?q=" + city + "&appid=" + apiKey + "&lang=vi";
@@ -65,10 +78,17 @@ public class MainActivity extends AppCompatActivity {
                         String cloud = jsonObjectCloud.getString("all");
                         JSONObject jsonObjectSys = jsonObject.getJSONObject("sys");
                         String country = jsonObjectSys.getString("country");
+                        String name = jsonObject.getString("name");
 
-                        op += "Địa điểm: " + city + "\nQuốc gia: " + country + "\nHiện trạng: " + description
-                                + "\nNhiệt độ: " + String.format("%.2f", temp) + " °C\nĐộ ẩm: " + humidity
-                                + " %\nTốc độ gió: " + wind + " m/s\nMây: " + cloud + " %\nÁp suất: " + pressure + " hPa";
+                        String cityNameOp = name + " (" + country + ")";
+                        cityName.setText(cityNameOp);
+                        String nhietdoOp = String.format("%.2f", temp) + "°C";
+                        nhietdo.setText(nhietdoOp);
+                        String hientrangOp = description.substring(0, 1).toUpperCase() + description.substring(1).toLowerCase();
+                        hientrang.setText(hientrangOp);
+
+                        op += "Độ ẩm: " + humidity + "%\nTốc độ gió: "
+                                + wind + " m/s\nMây: " + cloud + "%\nÁp suất: " + pressure + " hPa";
                         results.setText(op);
                     } catch (JSONException e) {
                         e.printStackTrace();
