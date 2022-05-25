@@ -21,6 +21,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class MainActivity extends AppCompatActivity {
     EditText cityInput;
     TextView cityName, nhietdo, hientrang, results;
@@ -46,6 +49,13 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public String turnToHour(long temp) {
+        SimpleDateFormat HMM = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+        Date date = new Date(temp * 1000);
+        String result = HMM.format(date);
+        return result;
+    }
+
     public void getWeather(View view) {
         InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mgr.hideSoftInputFromWindow(cityInput.getWindowToken(), 0);
@@ -59,14 +69,14 @@ public class MainActivity extends AppCompatActivity {
         } else {
             tempUrl = url +  "?q=" + city + "&appid=" + apiKey + "&lang=vi";
             RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+
             StringRequest stringRequest = new StringRequest(Request.Method.POST, tempUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     String op = "";
                     try {
                         JSONObject jsonObject = new JSONObject(response);
-                        JSONArray jsonArray = jsonObject.getJSONArray("weather");
-                        JSONObject jsonObjectWeather = jsonArray.getJSONObject(0);
+                        JSONObject jsonObjectWeather = jsonObject.getJSONArray("weather").getJSONObject(0);
                         String description = jsonObjectWeather.getString("description");
                         JSONObject jsonObjectMain = jsonObject.getJSONObject("main");
                         double temp = jsonObjectMain.getDouble("temp") - 273.15;
@@ -79,6 +89,11 @@ public class MainActivity extends AppCompatActivity {
                         JSONObject jsonObjectSys = jsonObject.getJSONObject("sys");
                         String country = jsonObjectSys.getString("country");
                         String name = jsonObject.getString("name");
+                        long sunrise = jsonObjectSys.getInt("sunrise");
+                        long sunset = jsonObjectSys.getInt("sunset");
+
+                        String sunrise1 = turnToHour(sunrise);
+                        String sunset1 = turnToHour(sunset);
 
                         String cityNameOp = name + " (" + country + ")";
                         cityName.setText(cityNameOp);
@@ -88,7 +103,8 @@ public class MainActivity extends AppCompatActivity {
                         hientrang.setText(hientrangOp);
 
                         op += "Độ ẩm: " + humidity + "%\nTốc độ gió: "
-                                + wind + " m/s\nMây: " + cloud + "%\nÁp suất: " + pressure + " hPa";
+                                + wind + " m/s\nMây: " + cloud + "%\nÁp suất: " + pressure + " hPa"
+                                + "\nMặt trời lên: " + sunrise1 + "\nMặt trời xuống: " + sunset1;
                         results.setText(op);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -97,7 +113,10 @@ public class MainActivity extends AppCompatActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                    cityName.setText("");
+                    nhietdo.setText("");
+                    hientrang.setText("");
                     results.setText("Thành phố không tồn tại");
                 }
             });
